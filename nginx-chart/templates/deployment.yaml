@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nginx
+  labels:
+    {{- template "kubelabels" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kubelabels" . | indent 2 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kubelabels" . | indent 4 }}
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: nginx
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
